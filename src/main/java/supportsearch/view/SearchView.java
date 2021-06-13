@@ -52,11 +52,11 @@ public class SearchView {
 
         System.out.println("=========================\n");
         System.out.println("SEARCH BY:");
-        System.out.println("1 - ORGANIZATION   ");
-        System.out.println("2 - USER");
-        System.out.println("3 - TICKET");
-        System.out.println("q - Quit");
-        System.out.print("Enter number of option: ");
+        System.out.println("Press 1 for ORGANIZATION   ");
+        System.out.println("Press 2 for USER");
+        System.out.println("Press 3 for TICKET");
+        System.out.println("Press q to Quit");
+        System.out.print("Enter option: ");
         selection = input.next();
         return selection.toLowerCase();
     }
@@ -71,7 +71,7 @@ public class SearchView {
                 case "3":
                     return ticketDisplayAndSearch();
                 case "q":
-                    quit();
+                    return quit();
                 default:
                     return mainMenu();
             }
@@ -85,7 +85,7 @@ public class SearchView {
         //Display Ticket Fields
         String ticketField = fieldsMenu(TICKET_MENU_OPTIONS);
         if ("q".equals(ticketField)) {
-            quit();
+            return quit();
         } else if (!"c".equals(ticketField)) {
             //Get search field and search value
             try {
@@ -108,7 +108,7 @@ public class SearchView {
         //Display User Fields
         String userField = fieldsMenu(USER_MENU_OPTIONS);
         if ("q".equals(userField)) {
-            quit();
+            return quit();
         } else if (!"c".equals(userField)) {
             //Get search field and search value
             try {
@@ -131,7 +131,7 @@ public class SearchView {
         //Display Organization Fields
         String organizationField = fieldsMenu(ORGANIZATION_MENU_OPTIONS);
         if ("q".equals(organizationField)) {
-            quit();
+            return quit();
         } else if (!"c".equals(organizationField)) {
             //Get search field and search value
             try {
@@ -150,16 +150,15 @@ public class SearchView {
         return mainMenu();
     }
 
-    public void quit() {
+    public String quit() {
         System.out.print("Are you sure you want to quite? y/n : ");
         Scanner valueInput = new Scanner(System.in);
         String ans = valueInput.next();
         if ("y".equals(ans.toLowerCase())) {
             System.out.println("\n\n *****  Thank you! See you next time. *****\n\n");
             System.exit(0);
-        } else {
-            mainMenu();
         }
+        return mainMenu();
     }
 
     private String fieldsMenu(List<String> fieldsOptions) {
@@ -167,15 +166,15 @@ public class SearchView {
         Scanner fieldInput = new Scanner(System.in);
 
         System.out.println("-------------------------");
-        System.out.println("Choose number of search field:");
+        System.out.println("Select field to search on:");
         int itemNumber = 1;
         for (String option : fieldsOptions) {
-            System.out.println(itemNumber++ + " - " + option);
+            System.out.println("Press " + itemNumber++ + " for " + option);
         }
 
-        System.out.println("c - Cancel");
-        System.out.println("q - Quit");
-        System.out.print("Enter the number of field option: ");
+        System.out.println("Press c to Cancel and return to main menu ");
+        System.out.println("Press q to Quit");
+        System.out.print("Enter option: ");
 
         fieldSelection = fieldInput.next();
         return fieldSelection.toLowerCase();
@@ -184,7 +183,7 @@ public class SearchView {
     private String enterSearchValue(String searchField) {
         System.out.print("Enter value (" + searchField+  "):");
         Scanner valueInput = new Scanner(System.in).useDelimiter("\\n");
-        String searchString = valueInput.next();
+        String searchString = valueInput.nextLine();
         return searchString;
     }
 
