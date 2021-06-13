@@ -42,8 +42,6 @@ public class SearchUtil {
      */
     public static <T> Predicate<T> equalsPredicate(Field field, Object searchValue) {
         return (T instance) -> {
-            //Object searchValueCasted = convertStringToFieldType(field, searchValue);
-          //  if (searchValueCasted != null) {
                 try {
                     field.setAccessible(true);
                     Object fieldInstance = field.get(instance);
@@ -51,7 +49,6 @@ public class SearchUtil {
                 } catch (IllegalAccessException e) {
                     System.out.println("Error when creating equals predicate " + e.getLocalizedMessage());
                 }
-            //}
             return false;
         };
     }

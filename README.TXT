@@ -1,9 +1,20 @@
-This README file explains how to run a command line application to search
-Tickets, Users and Organizations.
+This application will search Tickets, Users and Organizations.
 
+Assumptions:
+A User can belong to an Organization.
+A Ticket can belong to an Organization.
+A Ticket has a submitter which  is a User.
+A Ticket has an assignee which is a User.
+Date is formatted as yyyy-MM-dd'T'HH:mm:ss X
+String "true" and "false" are the valid values for boolean fields.
+
+Limitations:
+Search will look for the full text entered by user.
+
+-------------------------------------------
 What you'll need:
-1. Java 8 or later
-
+* Java 11
+You can download Open JDK 11 here: https://jdk.java.net/java-se-ri/11
 
 ---- BUILD AND RUN ON THE COMMAND LINE ----
 
@@ -14,10 +25,10 @@ What you'll need:
     gradlew clean build
 Note: Build will fail if one of the unit tests fails
 
-*Run application by running the jar file:
+* Run application by running the jar file:
     java -jar build\libs\supportsearch-0.1.0.jar
 
-*To run the unit tests only
+* To run the unit tests only
     gradlew test
 
 
