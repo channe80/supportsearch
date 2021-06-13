@@ -25,6 +25,7 @@ class SearchUtilTest {
         DateFormat df = new SimpleDateFormat(DataLoaderFactory.DATE_PATTERN);
         User u1 = new User();
         u1.setId(123L);
+        u1.setName("Francisca Rasmussen");
         u1.setExternalId("1a227508-9f39-427c-8f57-1b72f3fab87c");
         Date d1 = SearchUtil.convertStringToDate("2016-04-15T05:19:46 -10:00");
         u1.setCreatedAt(d1);
@@ -34,6 +35,7 @@ class SearchUtilTest {
 
         User u2 = new User();
         u2.setId(456L);
+        u1.setName("Ingrid Wagner");
         u2.setExternalId("2217c7dc-7371-4401-8738-0a8a8aedc08d");
         Date d2 = SearchUtil.convertStringToDate("2017-04-15T05:19:46 -10:00");
         u2.setCreatedAt(d2);
@@ -51,16 +53,25 @@ class SearchUtilTest {
     }
 
     @Test
-    void equalsPredicate_fieldStringType_valuesCompared() throws NoSuchFieldException {
+    void equalsStringPredicate_fieldStringType_valuesCompared() throws NoSuchFieldException {
         Field stringField = User.class.getDeclaredField("externalId");
         Object searchValThatExist = SearchUtil.convertStringToFieldType(stringField,"1a227508-9f39-427c-8f57-1b72f3fab87c");
-        List<User> collect = users.stream().filter(SearchUtil.equalsPredicate(stringField, searchValThatExist)).collect(Collectors.toList());
+        List<User> collect = users.stream().filter(SearchUtil.equalsStringPredicate(stringField, searchValThatExist)).collect(Collectors.toList());
         Assertions.assertEquals(1, collect.size());
         Assertions.assertEquals(123L, collect.get(0).getId());
 
         Object searchValDoesNotExist =  SearchUtil.convertStringToFieldType(stringField,"aaaaabbb");
-        List<User> collect2 = users.stream().filter(SearchUtil.equalsPredicate(stringField, searchValDoesNotExist)).collect(Collectors.toList());
+        List<User> collect2 = users.stream().filter(SearchUtil.equalsStringPredicate(stringField, searchValDoesNotExist)).collect(Collectors.toList());
         Assertions.assertEquals(0, collect2.size());
+    }
+
+    @Test
+    void equalsStringPredicate_fieldStringType_caseIgnored() throws NoSuchFieldException {
+        Field stringField = User.class.getDeclaredField("name");
+        Object searchValThatExist = SearchUtil.convertStringToFieldType(stringField,"ingrid wagner");
+        List<User> collect = users.stream().filter(SearchUtil.equalsStringPredicate(stringField, searchValThatExist)).collect(Collectors.toList());
+        Assertions.assertEquals(1, collect.size());
+        Assertions.assertEquals(123L, collect.get(0).getId());
     }
 
     @Test
@@ -128,8 +139,8 @@ class SearchUtilTest {
         Assertions.assertEquals(2, collect.size());
         Assertions.assertEquals(123L, collect.get(0).getId());
 
-        String searchValThatExist2 = "Mulino";
-        List<User> collect2 = users.stream().filter(SearchUtil.listContainsStringPredicate(listField, searchValThatExist2)).collect(Collectors.toList());
+        String searchValThatExistInUpperCase2 = "MULINO";
+        List<User> collect2 = users.stream().filter(SearchUtil.listContainsStringPredicate(listField, searchValThatExistInUpperCase2)).collect(Collectors.toList());
         Assertions.assertEquals(2, collect.size());
         Assertions.assertEquals(456L, collect2.get(0).getId());
 

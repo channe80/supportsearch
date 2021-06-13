@@ -7,6 +7,7 @@ import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -28,6 +29,8 @@ public class SearchUtil {
             return listContainsStringPredicate(field, searchValue);
         } else if (field.getGenericType().getTypeName().equals("java.util.Date")) {
             return equalDatesPredicate(field, searchValue);
+        } else if (field.getGenericType().getTypeName().equals("java.lang.String")) {
+            return equalsStringPredicate(field, searchValue);
         } else {
             return equalsPredicate(field, searchValue);
         }
@@ -54,6 +57,26 @@ public class SearchUtil {
     }
 
     /**
+     * Create predicate that compares String field and String value
+     * @param field
+     * @param searchValue
+     * @param <T>
+     * @return
+     */
+    public static <T> Predicate<T> equalsStringPredicate(Field field, Object searchValue) {
+        return (T instance) -> {
+            try {
+                field.setAccessible(true);
+                String fieldInstance = (String) field.get(instance);
+                return fieldInstance!= null && fieldInstance.equalsIgnoreCase((String) searchValue);
+            } catch (IllegalAccessException e) {
+                System.out.println("Error when creating equals predicate " + e.getLocalizedMessage());
+            }
+            return false;
+        };
+    }
+
+    /**
      * Create predicate that check if a given string is present in an List<String> field
      * @param field
      * @param searchValue
@@ -64,8 +87,8 @@ public class SearchUtil {
         return (T instance) -> {
             try {
                 field.setAccessible(true);
-                List listField = (List) field.get(instance);
-                return listField != null && listField.contains(searchValue);
+                List<String> listField = (ArrayList<String>) field.get(instance);
+                return listField != null && listField.stream().anyMatch(l->l.equalsIgnoreCase((String) searchValue));
             } catch (IllegalAccessException e) {
                 System.out.println("Error when creating predicate for a List field"  + e.getLocalizedMessage());
             }
